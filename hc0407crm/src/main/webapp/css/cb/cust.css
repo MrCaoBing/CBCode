@@ -1,0 +1,46 @@
+body{
+    padding: 10px;  
+}
+.layui-table-page *{
+    text-align: center;
+}
+
+
+html { _height: auto; _padding: 50px 0 0px; }
+.layui-form-label{
+    color: #4c5262;
+    font-family: 华文楷体;
+    font-weight: 700;
+    background-color: rgba(4, 19, 4, 0.12);
+}
+#submitTr{
+    margin:0px;
+}
+/* 订单明细 */
+.ordersLineDiv{
+	background-color: #c2c2c2;
+	padding: 10px 70px;
+}
+.ordersTr{
+	background-color: #8de7c6;
+}
+#ordersLinrTab{
+	border-radius: 30px;
+	box-shadow: 0px 0px 25px rgb(0, 0, 0);
+}
+.icon{
+	width:25px;
+	height:25px;
+}
+
+.float{
+	float:left;
+}
+.parentRight{
+	color:black;
+	font-weight: 700;
+	font-family: 华文仿宋;
+}
+#fromUsrPwd{
+	margin: 15px;
+}

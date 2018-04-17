@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haochen.hc0407crm.dao.hqm.ProductDao">
+
+	<!-- <select id="listProductTiaojian" parameterType="Paging" resultType="Product"> 
+		select prod_id prodId,prod_name prodName,prod_type prodType,prod_batch prodBatch,prod_unit 
+		prodUnit,prod_price prodPrice,prod_memo prodMemo from product <if test="page 
+		!= null and limit != null"> limit #{page},#{limit} </if> </select> -->
+		
+		<!-- <where>
+			<if test="map.prodName != null"> prod_name = #{map.prodName} </if>
+			<if test="map.prodType != null"> and prod_type=#{map.prodType} </if>
+			<if test="map.prodBatch != null"> and prod_batch=#{map.prodBatch} </if>
+		</where> -->
+
+	<select id="listProductTiaojian" parameterType="Paging"
+		resultType="Product">
+
+		select prod_id prodId,prod_name prodName,prod_type prodType,prod_batch
+		prodBatch,prod_unit prodUnit,prod_price prodPrice,prod_memo prodMemo
+		from product
+		<where>
+			<if test="map.prodName != null"> prod_name like concat(concat('%', #{map.prodName}), '%') </if>
+			<if test="map.prodType != null"> and prod_type like concat(concat('%', #{map.prodType}), '%') </if>
+			<if test="map.prodBatch != null"> and prod_batch like concat(concat('%', #{map.prodBatch}), '%')</if>
+			
+		</where>
+		limit #{page},#{limit}
+	</select>
+
+	<select id="findProductCount" resultType="int" parameterType="Paging">
+		select COUNT(1) from product
+		<where>
+			<if test="map.prodName != null"> prod_name like concat(concat('%', #{map.prodName}), '%') </if>
+			<if test="map.prodType != null"> and prod_type like concat(concat('%', #{map.prodType}), '%') </if>
+			<if test="map.prodBatch != null"> and prod_batch like concat(concat('%', #{map.prodBatch}), '%') </if>
+		</where>
+	</select>
+</mapper>
+
+			
+			
+
+
+	 		
+			

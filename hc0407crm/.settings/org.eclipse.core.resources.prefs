@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+encoding//src/main/java/com/haochen/hc0407crm/controller/cb=gbk
+encoding//src/main/java/com/haochen/hc0407crm/entity=gbk
+encoding//src/main/java/com/haochen/hc0407crm/filter/EncodingFilter.java=gbk
+encoding//src/main/java/com/haochen/hc0407crm/filter/InitFilter.java=gbk
+encoding//src/main/java/com/haochen/hc0407crm/service/cb=gbk
+encoding//src/main/java/com/haochen/hc0407crm/service/cb/impl/BasDictServiceImpl.java=gbk
+encoding//src/main/java/com/haochen/hc0407crm/utils/MD5.java=gbk
+encoding//src/main/java/com/haochen/hc0407crm/utils/Paging.java=gbk

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.haochen.hc0407crm.dao.cb.SysRoleDao">
+	
+	<select id="querySysRole" resultType="SysRole">
+		select 
+				 	role_id roleId,
+				 	role_name roleName,
+				 	role_desc roleDesc,
+				 	role_flag roleFlag
+		from sys_role
+		<where>
+			role_flag = 1 and role_name != 'admin'
+			<if test="roleId != null">
+				
+			</if>
+		</where>
+	</select>
+	
+	<update id="updateSysRole" parameterType="map">
+		update sys_role
+		<set>
+			<if test="roleName != null">
+				role_name = #{roleName},
+			</if>
+			<if test="roleDesc != null">
+				role_desc = #{roleDesc},
+			</if>
+			<if test="roleFlag != null">
+				role_flag = #{roleFlag},
+			</if>
+		</set>
+		where role_id =#{roleId}
+	</update>
+	
+	<insert id="insertSysRole" parameterType="map" useGeneratedKeys="true" keyProperty="roleId">
+		insert into sys_role(role_name,role_desc) values(#{roleName},#{roleDesc})
+	</insert>
+	
+	<select id="selectSysRoleByName" parameterType="map" resultType="int">
+		select 
+				 	count(role_id)
+		from sys_role where role_name = #{roleName}
+	</select>
+</mapper>

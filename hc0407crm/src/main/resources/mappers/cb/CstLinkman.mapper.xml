@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haochen.hc0407crm.dao.cb.CstLinkmanDao">
+	<!-- 根据客户主键查找 -->
+	<select id="listCstLinkman" resultType="CstLinkman" parameterType="map">
+		select 
+				    lkm_id lkmId,    
+					lkm_name lkmName,  
+					lkm_sex lkmSex,   
+					lkm_postion lkmPostion,
+					lkm_tel lkmTel,    
+					lkm_mobile lkmMobile, 	
+					lkm_memo lkmMemo  	
+		from cst_linkman
+		where lkm_cust_no = #{custNo}
+	</select>
+	<!-- 按id修改联系人 -->
+	<update id="updateCstLinkman" parameterType="map">
+		update cst_linkman
+			<set>
+				<if test="lkmName != null">
+					lkm_name = #{lkmName},
+				</if>
+				<if test="lkmSex != null">
+					lkm_sex = #{lkmSex},
+				</if>
+				<if test="lkmPostion != null">
+					lkm_postion = #{lkmPostion},
+				</if>
+				<if test="lkmTel != null">
+					lkm_tel = #{lkmTel},
+				</if>
+				<if test="lkmMobile != null">
+					lkm_mobile = #{lkmMobile},
+				</if>
+				<if test="lkmMemo != null">
+					lkm_memo = #{lkmMemo},
+				</if>
+			</set>
+			where  lkm_id = #{lkmId}
+	</update>
+	<!-- 添加联系人 -->
+	<insert id="insertCstLinkman">
+		insert into `cst_linkman`(`lkm_cust_no`,`lkm_name`,`lkm_sex`,`lkm_postion`,`lkm_tel`,`lkm_mobile`,`lkm_memo`)  
+		values(#{custNo},#{lkmName},#{lkmSex},#{lkmPostion},#{lkmTel},#{lkmMobile},#{lkmMemo});
+	</insert>
+	<!-- 删除联系人 -->
+	<delete id="deleteCstLinkman" parameterType="map">
+		delete from cst_linkman where lkm_id = #{lkmId}
+	</delete>
+</mapper>
+
+	   				

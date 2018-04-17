@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+body{
+            padding: auto auto;
+            background-color: rgba(4, 9, 4, 0.02);
+        }
+        #outer{
+            box-shadow: 0px 0px 10px #5d896b;
+        }
+        #head>*{
+            float: left;
+        }
+        .head_title{
+            font-size: 15px;
+            font-family: 楷体;
+            font-weight: 700;
+        }

@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haochen.hc0407crm.dao.cb.CstCustomerDao">
+	<!-- 按条件分页查询 -->
+	<select id="listCstCustomer" resultMap="CstCustomerRM"
+		parameterType="Paging">
+		select
+		cust_no custNo,
+		cust_id custId,
+		cust_name custName,
+		cust_region custRegion,
+		cust_manager_id,
+		cust_level custLevel,
+		cust_satisfy custSatisfy,
+		cust_credit custCredit,
+		cust_addr custAddr,
+		cust_zip custZip,
+		cust_tel custTel,
+		cust_fax custFax,
+		cust_website custWebsite,
+		cust_licence_no custLicenceNo,
+		cust_chieftain custChieftain,
+		cust_bankroll custBankroll,
+		cust_turnover custTurnover,
+		cust_bank custBank,
+		cust_bank_account custBankAccount,
+		cust_local_tax_no custLocalTaxNo,
+		cust_national_tax_no custNationalTaxNo,
+		cust_status custStatus,
+		Lost_reason lostReason,
+		usr_id usrId,
+		usr_name usrName,
+		usr_password usrPassword,
+		usr_role_id roleId,
+		usr_flag usrFlag,
+		<if test="map.warning == null">
+			Lost_time lostTime
+		</if>
+		<if test="map.warning != null">
+			yj.maxDate lostTime
+		</if>
+		from (cst_customer c left join sys_user su on c.cust_manager_id =
+		su.usr_id)
+		<if test="map.warning != null">
+			right join (select o.`odr_customer_no`
+			odrNo,MAX(o.odr_date) maxDate from orders o group by
+			o.`odr_customer_no` having
+			PERIOD_DIFF(DATE_FORMAT(NOW(),'%y%m'),DATE_FORMAT(MAX(o.odr_date),'%y%m'))
+			> 6) yj on yj.odrNo = c.cust_no
+		</if>
+		<where>
+			<if test="map.custStatus == null">
+				cust_status = 1
+			</if>
+			<if test="map.custStatus != null">
+				cust_status = #{map.custStatus}
+			</if>
+			<if test="map.custNo != null">
+				and cust_no = #{map.custNo}
+			</if>
+			<if test="map.custId != null">
+				and cust_Id like concat(concat('%', #{map.custId}), '%')
+			</if>
+			<if test="map.custNamePrefix != null">
+				and cust_name like concat( #{map.custNamePrefix},'%')
+			</if>
+			<if test="map.custName != null">
+				and cust_name like concat(concat('%', #{map.custName}),'%')
+			</if>
+			<if test="map.custRegion != null">
+				and cust_region = #{map.custRegion}
+			</if>
+			<if test="map.sysUser != null and map.sysUser != ''">
+				and usr_name = #{map.sysUser}
+			</if>
+			<if test="map.custLevel != null">
+				and cust_level = #{map.custLevel }
+			</if>
+			<if test="limit != 0 and limit != null">
+				limit #{page},#{limit}
+			</if>
+		</where>
+	</select>
+	<resultMap type="CstCustomer" id="CstCustomerRM">
+		<result property="sysUser.usrId" column="cust_manager_id" />
+		<result property="sysUser.usrName" column="usrName" />
+		<result property="sysUser.usrPassword" column="usrPassword" />
+		<result property="sysUser.usrFlag" column="usrFlag" />
+	</resultMap>
+	<!-- 分页之前查询数据数量 -->
+	<select id="findCstCustomerCount" resultType="int"
+		parameterType="Paging">
+		select
+		count(cust_no)
+		from cst_customer cc left join sys_user su on cc.cust_manager_id =
+		su.usr_id
+		<where>
+			<if test="map.custStatus == null">
+				cust_status = 1
+			</if>
+			<if test="map.custStatus != null">
+				cust_status = #{map.custStatus}
+			</if>
+			<if test="map.custId != null">
+				and cust_id like concat(concat('%', #{map.custId}), '%')
+			</if>
+			<if test="map.custName != null">
+				and cust_name like concat(concat('%', #{map.custName}),
+				'%')
+			</if>
+			<if test="map.custRegion != null">
+				and cust_region = #{map.custRegion}
+			</if>
+			<if test="map.sysUser != null and map.sysUser != ''">
+				and usr_name = #{map.sysUser}
+			</if>
+			<if test="map.custLevel != null">
+				and cust_level = #{map.custLevel }
+			</if>
+		</where>
+	</select>
+
+
+	<update id="updateCstCustomer" parameterType="map">
+		update cst_customer c
+		<set>
+			<if test="custName != null">
+				cust_name = #{custName},
+			</if>
+			<if test="custRegion != null">
+				cust_region = #{custRegion},
+			</if>
+			<if test="sysUser != null">
+				cust_manager_id = #{sysUser},
+			</if>
+			<if test="custLevel != null">
+				cust_level = #{custLevel},
+			</if>
+			<if test="custSatisfy != null">
+				cust_satisfy = #{custSatisfy},
+			</if>
+			<if test="custCredit != null">
+				cust_credit = #{custCredit},
+			</if>
+			<if test="custAddr != null">
+				cust_addr = #{custAddr},
+			</if>
+			<if test="custZip != null">
+				cust_zip = #{custZip},
+			</if>
+			<if test="custTel != null">
+				cust_tel = #{custTel},
+			</if>
+			<if test="custFax != null">
+				cust_fax = #{custFax},
+			</if>
+			<if test="custWebsite != null">
+				cust_website = #{custWebsite},
+			</if>
+			<if test="custLicenceNo != null">
+				cust_licence_no = #{custLicenceNo},
+			</if>
+			<if test="custChieftain != null">
+				cust_chieftain = #{custChieftain},
+			</if>
+			<if test="custBankroll != null">
+				cust_bankroll = #{custBankroll},
+			</if>
+			<if test="custTurnover != null">
+				cust_turnover = #{custTurnover},
+			</if>
+			<if test="custBank != null">
+				cust_bank = #{custBank},
+			</if>
+			<if test="custBankAccount != null">
+				cust_bank_account = #{custBankAccount},
+			</if>
+			<if test="custLocalTaxNo != null">
+				cust_local_tax_no = #{custLocalTaxNo},
+			</if>
+			<if test="custNationalTaxNo != null">
+				cust_national_tax_no = #{custNationalTaxNo},
+			</if>
+			<if test="custStatus != null">
+				cust_status = #{custStatus},
+			</if>
+			<if test="lostTime != null">
+				cust_status = #{lostTime},
+			</if>
+			<if test="lostReason != null">
+				lost_reason = #{lostReason},
+			</if>
+		</set>
+		<if test="custNo != null">
+			where cust_no = #{custNo}
+		</if>
+		<if test="custNo == null">
+			where cust_no in(select o.odr_customer_no from orders o
+			group by o.odr_customer_no having
+			PERIOD_DIFF(DATE_FORMAT(NOW(),'%y%m'),DATE_FORMAT(MAX(o.odr_date),'%y%m'))
+			> 6) and c.cust_status = 1
+		</if>
+	</update>
+	<insert id="insertCstCustomer" parameterType="map">
+		insert into
+		cst_customer(cust_id,cust_name,cust_region,cust_manager_id,cust_level,cust_satisfy,cust_credit,cust_addr,cust_zip,cust_tel,cust_fax,cust_website,cust_licence_no,cust_chieftain,
+		cust_bankroll,cust_turnover,cust_bank,cust_bank_account,cust_local_tax_no,cust_national_tax_no)
+		values(#{custId},#{custName},#{custRegion},#{sysUser},#{custLevel},#{custSatisfy},#{custCredit},#{custAddr},#{custZip},#{custTel},#{custFax},
+		#{custWebsite},#{custLicenceNo},#{custChieftain},#{custBankroll},#{custTurnover},#{custBank}
+		,#{custBankAccount},#{custLocalTaxNo},#{custNationalTaxNo})
+	</insert>
+	<select id="selectCstCustomerInfo" parameterType="string" resultType="CstCustomer">
+		select
+		cust_no custNo,
+		cust_id custId,
+		cust_name custName,
+		cust_region custRegion,
+		cust_manager_id,
+		cust_level custLevel,
+		cust_satisfy custSatisfy,
+		cust_credit custCredit,
+		cust_addr custAddr,
+		cust_zip custZip,
+		cust_tel custTel,
+		cust_fax custFax,
+		cust_website custWebsite,
+		cust_licence_no custLicenceNo,
+		cust_chieftain custChieftain,
+		cust_bankroll custBankroll,
+		cust_turnover custTurnover,
+		cust_bank custBank,
+		cust_bank_account custBankAccount,
+		cust_local_tax_no custLocalTaxNo,
+		cust_national_tax_no custNationalTaxNo,
+		cust_status custStatus,
+		Lost_reason lostReason
+		from cst_customer
+		where cust_id=#{custId}
+	</select>
+	
+	<select id="selectIdCstCustomerInfo" parameterType="_int" resultType="CstCustomer">
+		select
+		cust_no custNo,
+		cust_id custId,
+		cust_name custName,
+		cust_region custRegion,
+		cust_manager_id,
+		cust_level custLevel,
+		cust_satisfy custSatisfy,
+		cust_credit custCredit,
+		cust_addr custAddr,
+		cust_zip custZip,
+		cust_tel custTel,
+		cust_fax custFax,
+		cust_website custWebsite,
+		cust_licence_no custLicenceNo,
+		cust_chieftain custChieftain,
+		cust_bankroll custBankroll,
+		cust_turnover custTurnover,
+		cust_bank custBank,
+		cust_bank_account custBankAccount,
+		cust_local_tax_no custLocalTaxNo,
+		cust_national_tax_no custNationalTaxNo,
+		cust_status custStatus,
+		Lost_reason lostReason
+		from cst_customer
+		where cust_no=#{custNo}
+	</select>
+	
+	<!-- 按id查询客户 -->
+	<select id="selectCstCustomerByName" parameterType="String" resultType="CstCustomer">
+		select
+					cust_no custNo,
+					cust_id custId,
+					cust_name custName,
+					cust_region custRegion,
+					cust_manager_id,
+					cust_level custLevel,
+					cust_satisfy custSatisfy,
+					cust_credit custCredit,
+					cust_addr custAddr,
+					cust_zip custZip,
+					cust_tel custTel,
+					cust_fax custFax,
+					cust_website custWebsite,
+					cust_licence_no custLicenceNo,
+					cust_chieftain custChieftain,
+					cust_bankroll custBankroll,
+					cust_turnover custTurnover,
+					cust_bank custBank,
+					cust_bank_account custBankAccount,
+					cust_local_tax_no custLocalTaxNo,
+					cust_national_tax_no custNationalTaxNo,
+					cust_status custStatus,
+					Lost_reason lostReason
+					from cst_customer
+		where cust_name=#{custName} and cust_status = 1
+	</select>
+	
+</mapper>
+			
+					

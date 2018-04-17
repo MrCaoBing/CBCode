@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haochen.hc0407crm.dao.cb.CstLostDao">
+	<!-- 根据客户流失主键查找 -->
+	<select id="queryCstLost" resultMap="queryCstLostRM" parameterType="Paging">
+		select
+					lst_id lstId,
+					lst_last_order_date lstLastOrderDate,
+					lst_delay lstDelay,
+					lst_status lstStatus,
+					cust_name,
+					usr_name,
+					cust_no,
+					Lost_reason lostReason,
+					Lost_time lostTime,
+					cust_level custLevel,
+					cust_manager_id custManagerId
+		from (cst_lost cl left join cst_customer cc on cl.lst_cust_no = cc.cust_no) left join sys_user su on su.usr_id = cc.cust_manager_id
+		where 0 = 0
+			<if test="map.lstStatus != null">
+				and  lst_status = #{map.lstStatus}
+			</if>
+			<if test="map.custName != null">
+				and cust_name like concat(concat('%', #{map.custName}), '%')
+			</if>
+			<if test="map.userNo != null">
+				and cust_manager_id = #{map.userNo}
+			</if>
+		<if test="limit != 0 and limit != null">
+				limit #{page},#{limit}
+		</if>
+	</select>
+	
+	<resultMap type="CstLost" id="queryCstLostRM">
+		<result property="cstCustomer.custNo" column="cust_no"/>
+		<result property="cstCustomer.custName" column="cust_name"/>
+		<result property="cstCustomer.sysUser.usrName" column="usr_name"/>
+		<result property="cstCustomer.lostReason" column="lostReason"/>
+		<result property="cstCustomer.lostTime" column="lostTime"/>
+		<result property="cstCustomer.custLevel" column="custLevel"/>
+		<result property="cstCustomer.sysUser.usrId" column="custManagerId"/>
+	</resultMap>
+	
+	<!-- 分页需要的数据条目 -->
+	<select id="queryCstLostCount" resultType="int">
+		select
+					count(lst_id)
+		from (cst_lost cl left join cst_customer cc on cl.lst_cust_no = cc.cust_no) left join sys_user su on su.usr_id = cc.cust_manager_id
+			where 0 = 0 
+			<if test="map.lstStatus != null">
+				and lst_status = #{map.lstStatus}
+			</if>
+			<if test="map.custName!=null">
+				and cust_name like concat(concat('%', #{map.custName}), '%')
+			</if>
+			<if test="map.userNo!=null">
+				and cust_manager_id = #{map.userNo}
+			</if>
+	</select>
+	<!-- 按id修改客户流失信息 -->
+	<update id="updateCstLost" parameterType="map">
+		update cst_lost
+		<set>
+			<if test="lstDelay != null">
+				lst_delay = #{lstDelay},	
+			</if>
+			<if test="lstStatus != null">
+				lst_status = #{lstStatus},	
+			</if>
+		</set>
+		where lst_id = #{lstId}
+	</update>
+	<!-- 添加客户流失信息 -->
+	<insert id="insertCstLost" parameterType="map">
+		insert into cst_lost(lst_last_order_date,lst_cust_no,lst_status) 
+		values(#{lstLastOrderDate},#{custNo},1)
+	</insert>
+</mapper>

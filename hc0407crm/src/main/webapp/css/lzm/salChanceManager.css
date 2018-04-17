@@ -1,0 +1,43 @@
+#chcDueUser{
+	width:200px;
+	height:37px;
+	border:1px solid #E6E6E6;
+	text-indent: 10px;
+	margin-left:10px;
+	cursor:pointer;
+}
+#TuBiaoShang{
+	margin-left:-25px;
+	color:#C2C2C2;
+	cursor:pointer;
+}
+#select{
+	cursor:pointer;
+	display:inline;
+}
+.content{
+	width:200px;
+	border:1px solid #E6E6E6;
+	text-indent: 10px;
+	margin-left:10px;
+	margin-top:5px;
+	line-height:35px;
+	cursor:pointer;
+	color:gray;
+	display:none;
+}
+.content1{
+	width:190px;
+	border:1px solid #E6E6E6;
+	text-indent: 10px;
+	margin-left:15px;
+	margin-top:5px;
+	line-height:35px;
+	cursor:pointer;
+	overflow: visible;
+	color:gray;
+	display:block;
+}
+.content dd:hover{
+	background-color:#E6E6E6;
+}

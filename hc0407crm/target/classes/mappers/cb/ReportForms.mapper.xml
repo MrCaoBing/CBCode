@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haochen.hc0407crm.dao.cb.ReportFormsDao">
+	<!-- 查询客户贡献数据 -->
+	<select id="queryCustAccounted"  resultType="map"  parameterType="Paging">
+		select 
+					o.odr_customer_no custNo,
+					cc.cust_id custId,
+					cc.cust_name name,
+					SUM(p.prod_price*ol.odd_count) value 
+		from ((orders o left join orders_line ol on ol.odd_id = odr_id) 
+						left join product p on ol.odd_prod_id = p.prod_id) 
+								left join cst_customer cc on cc.cust_no = o.odr_customer_no 
+		group by o.odr_customer_no
+		having 0 = 0 
+		<if test="map.custName != null">
+			and cc.cust_name like concat(concat('%', #{map.custName}), '%')
+		</if>		
+		<if test="limit != 0 and limit != null">
+				limit #{page},#{limit}
+		</if>		
+	</select>	
+	<select id="queryCustAccountedCount" resultType="int" parameterType="Paging">
+		select COUNT(custNo) from
+			(select 
+						o.odr_customer_no custNo,
+						cc.cust_name name
+			from ((orders o left join orders_line ol on ol.odd_id = odr_id) 
+							left join product p on ol.odd_prod_id = p.prod_id) 
+									left join cst_customer cc on cc.cust_no = o.odr_customer_no 
+			group by o.odr_customer_no
+			having 0 = 0 
+			<if test="map.custName != null">
+				and cc.cust_name like concat(concat('%', #{map.custName}), '%')
+			</if>	
+		) tab		
+	</select>
+	
+	<!-- 查询客户构成数据 -->
+	<select id="queryCustConstitute"  resultType="map"  parameterType="Paging">
+		select 
+					c.cust_level name,
+					COUNT(c.cust_level) value
+	    from cst_customer c group by c.cust_level
+		<if test="limit != 0 and limit != null">
+				limit #{page},#{limit}
+		</if>		
+	</select>	
+	<select id="queryCustConstituteCount" resultType="int" parameterType="Paging">
+		select 
+					COUNT(a) 
+		from (select c.cust_level a from cst_customer c group by c.cust_level) a;
+	</select>
+	
+	<!-- 查询客户服务构成数据 -->
+	<select id="queryCustService"  resultType="map"  parameterType="Paging">
+		select 
+					svr_type name,
+					MONTH(svr_create_date) type,
+					COUNT(svr_type) value
+		from cst_service 
+		where YEAR(svr_create_date) = YEAR(NOW())
+		group by svr_type,MONTH(svr_create_date)
+		order by MONTH(svr_create_date)
+		<if test="limit != 0 and limit != null">
+				limit #{page},#{limit}
+		</if>		
+	</select>	
+	<select id="queryCustServiceCount" resultType="int" parameterType="Paging">
+		select 
+					COUNT(t) 
+		from (select svr_type t from cst_service where YEAR(svr_create_date) = YEAR(NOW()) group by svr_type,MONTH(svr_create_date)) t
+	</select>
+	
+	<select id="queryCustLost" resultType="map">
+		select 
+					cust_level name,
+					COUNT(cust_level) value,
+					MONTH(Lost_time) type
+		from cst_customer cc where cust_status = 2 and YEAR(Lost_time) = YEAR(NOW()) group by cust_level,MONTH(Lost_time)
+		</select>
+	
+	
+</mapper>

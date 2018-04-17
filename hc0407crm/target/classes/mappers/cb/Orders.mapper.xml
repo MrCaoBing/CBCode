@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haochen.hc0407crm.dao.cb.OrdersDao">
+	<!-- 根据客户主键查找 -->
+	<select id="selectOrders" resultType="Orders" parameterType="Paging">
+		select
+					odr_id odrId,
+					odr_date odrDate,
+					odr_addr odrAddr,
+					odr_status odrStatus,
+					odr_memo odrMemo
+		from orders
+		where odr_customer_no = #{map.custNo}
+		limit #{page},#{limit}
+	</select>
+	
+	<select id="selectOrdersCount" resultType="int" parameterType="Paging">
+		select
+					count(odr_id)
+		from orders
+		where odr_customer_no = #{map.custNo}
+	</select>
+</mapper>
+
+	   				

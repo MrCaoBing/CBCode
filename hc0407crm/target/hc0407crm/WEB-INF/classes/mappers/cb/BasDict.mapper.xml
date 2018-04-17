@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haochen.hc0407crm.dao.cb.BasDictDao">
+
+	<select id="listBasDict" resultType="com.haochen.hc0407crm.entity.BasDict">
+		select
+		dict_id dictId,
+		dict_type dictType,
+		dict_item dictItem,
+		dict_value dictValue,
+		dict_is_editable dictIsEditable,
+		dict_status dictStatus
+		from bas_dict
+	</select>
+	<!-- <select id="listBasDictTiaojian" parameterType="Paging" resultType="BasDict"> 
+		select dict_id dictId, dict_type dictType, dict_item dictItem, dict_value 
+		dictValue, dict_is_editable dictIsEditable, dict_status dictStatus from bas_dict 
+		<if test="page != null and limit != null"> limit #{page},#{limit} </if> </select> -->
+
+	<select id="listBasDictTiaojian" parameterType="Paging"
+		resultType="BasDict">
+		select dict_id dictId, dict_type dictType, dict_item dictItem,
+		dict_value
+		dictValue, dict_is_editable dictIsEditable, dict_status
+		dictStatus from bas_dict
+		<where>
+			<if test="map.dictType!=null"> dict_type=#{map.dictType}</if>
+			<!-- <if test="map.dictType != null"> dict_type like concat(concat('%', 
+				#{map.dictType}), '%') </if> -->
+			<if test="map.dictItem != null"> and dict_item like concat(concat('%', #{map.dictItem}),
+				'%') </if>
+			<if test="map.dictValue != null"> and dict_value like concat(concat('%',
+				#{map.dictValue}), '%') </if>
+		</where>
+		limit #{page},#{limit}
+	</select>
+
+	<select id="findBasDictCount" resultType="int" parameterType="Paging">
+		select COUNT(1) from bas_dict
+
+		<where>
+			<!-- <if test="map.dictType != null"> dict_type like concat(concat('%', 
+				#{map.dictType}), '%') </if> -->
+			<if test="map.dictType!=null"> dict_type=#{map.dictType}</if>
+			<if test="map.dictItem != null"> and dict_item like concat(concat('%', #{map.dictItem}),
+				'%') </if>
+			<if test="map.dictValue != null"> and dict_value like concat(concat('%',
+				#{map.dictValue}), '%') </if>
+		</where>
+	</select>
+
+	<insert id="insertBasDict" parameterType="map">
+		insert into
+		bas_dict(dict_type,dict_item,dict_value,dict_is_editable)
+		values(#{dictType},#{dictItem1},#{dictValue},#{dictIsEdiTable})
+	</insert>
+
+	<delete id="deleteBasDict" parameterType="map">
+		delete from bas_dict
+		where dict_id = #{dictId}
+	</delete>
+
+	<update id="updateBasDict" parameterType="map">
+		update bas_dict
+		<set>
+			<if test="dictType != null">
+				dict_type = #{dictType},
+			</if>
+			<if test="dictItem != null">
+				dict_item = #{dictItem},
+			</if>
+			<if test="dictValue != null">
+				dict_value = #{dictValue},
+			</if>
+			<if test="dictIsEdiTable != null">
+				dict_is_editable = #{dictIsEdiTable}
+			</if>
+
+		</set>
+		<if test="dictId != null">
+			where dict_id = #{dictId}
+		</if>
+	</update>
+	<select id="findDictItem" resultType="int" parameterType="string">
+		select
+		count(*)
+		from bas_dict where dict_item=#{dictItem}
+	</select>
+</mapper>
+
+			
+			
+
+
+	 		
+			

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haochen.hc0407crm.dao.lzm.CstServiceDao">
+	<resultMap type="CstService" id="resultCstService">
+		<id property="svrId" column="svr_id" />
+		<result property="svrType" column="svr_type" />
+		<result property="svrTitle" column="svr_title" />
+		<result property="svrStatus" column="svr_status" />
+		<result property="svrRequest" column="svr_request" />
+		<result property="svrCreateDate" column="svr_create_date" />
+		<result property="svrDueDate" column="svr_due_date" />
+		<result property="svrDeal" column="svr_deal" />
+		<result property="svrDealDate" column="svr_deal_date" />
+		<result property="svrResult" column="svr_result" />
+		<result property="svrSatisfy" column="svr_satisfy" />
+		<association property="svrCreateUser" column="svr_create_id"
+			select="com.haochen.hc0407crm.dao.cb.SysUserDao.selectCreateUserInfo" />
+		<association property="svrDueUser" column="svr_due_id"
+			select="com.haochen.hc0407crm.dao.cb.SysUserDao.selectDueUserInfo" />
+		<association property="svrCustCustomer" column="svr_cust_no"
+			select="com.haochen.hc0407crm.dao.cb.CstCustomerDao.selectIdCstCustomerInfo" />
+	</resultMap>
+
+	<resultMap id="CstServiceRM" type="CstService">
+		<result property="svrCustCustomer.custNo" column="custNo" />
+		<result property="svrCustCustomer.custName" column="custName" />
+		<result property="svrCreateUser.usrId" column="usrId" />
+		<result property="svrCreateUser.usrName" column="usrName" />
+	</resultMap>
+
+	<select id="selectCstServiceInfo" resultMap="resultCstService"
+		parameterType="map">
+		SELECT
+		cst_service.svr_id,
+		cst_service.svr_type,
+		cst_service.svr_title,
+		cst_service.svr_cust_no,
+		cst_service.svr_status,
+		cst_service.svr_request,
+		cst_service.svr_create_id,
+		cst_service.svr_create_date,
+		cst_service.svr_due_id,
+		cst_service.svr_due_date,
+		cst_service.svr_deal,
+		cst_service.svr_deal_date,
+		cst_service.svr_result,
+		cst_service.svr_satisfy
+		FROM
+		cst_service
+		where
+		cst_service.svr_status=#{svrStatus}
+		<!-- <if test="chcCustId!=null"> </if> -->
+		<if test="svrTitle!=null">
+			and cst_service.svr_title like
+			concat(concat('%',#{svrTitle}),'%')
+		</if>
+		<if test="svrType!=null">
+			and cst_service.svr_type like
+			concat(concat('%',#{svrType}),'%')
+		</if>
+		<if test="svrCreateDate!=null and svrCreateDate1!=null">
+			<![CDATA[and cst_service.svr_create_date>=#{svrCreateDate} and
+			cst_service.svr_create_date<=#{svrCreateDate1}]]>
+		</if>
+		limit #{page},#{limit}
+	</select>
+	<select id="selectCstServiceInfoCount" resultType="int"
+		parameterType="map">
+		select count(svr_id) from cst_service where svr_status=#{svrStatus}
+		<if test="svrTitle!=null">
+			and cst_service.svr_title like
+			concat(concat('%',#{svrTitle}),'%')
+		</if>
+		<if test="svrType!=null">
+			and cst_service.svr_type like
+			concat(concat('%',#{svrType}),'%')
+		</if>
+		<if test="svrCreateDate!=null and svrCreateDate1!=null">
+		<![CDATA[and cst_service.svr_create_date>=#{svrCreateDate} and
+			cst_service.svr_create_date<=#{svrCreateDate1}]]>
+
+		</if>
+	</select>
+	<update id="updateCstServiceInfo" parameterType="map">
+		update cst_service set
+		<choose>
+			<when test="select==0">
+				<if test="svrDeal!=null">
+					svr_deal=#{svrDeal}
+				</if>
+				<if test="svrDealDate!=null">
+					,svr_deal_date=#{svrDealDate}
+				</if>
+				<if test="svrStatus!=null">
+					,svr_status=#{svrStatus}
+				</if>
+			</when>
+			<when test="select==1">
+				<if test="svrStatus!=null">
+					svr_status=#{svrStatus}
+				</if>
+				<if test="svrResult!=null">
+					,svr_result=#{svrResult}
+				</if>
+				<if test="svrSatisfy">
+					,svr_satisfy=#{svrSatisfy}
+				</if>
+			</when>
+		</choose>
+		where svr_id=#{svrId}
+	</update>
+
+	<insert id="insertCstService" parameterType="map">
+		insert into
+		cst_service(svr_type,svr_title,svr_cust_no,svr_status,svr_request,svr_create_id,svr_create_date)
+		values(#{svrType},#{svrTitle},#{svrCustCustomer},1,#{svrRequest},#{usrId},now())
+	</insert>
+
+	<select id="listCstServiceTiaojian" parameterType="Paging"
+		resultMap="CstServiceRM">
+		select s.svr_id svrId,c.cust_name custName,s.svr_title
+		svrTitle,s.svr_type svrType,u.usr_name usrName,s.svr_create_date
+		svrCreateDate,s.svr_status svrStatus
+		from cst_service s left join
+		cst_customer c on s.svr_cust_no=c.cust_no
+		left join sys_user u on
+		s.svr_create_id=u.usr_id where svr_status=1
+		<if test="map.svrCustCustomer != null and map.svrCustCustomer != ''">
+			and c.cust_name like
+			CONCAT(CONCAT('%',#{map.svrCustCustomer}),'%') </if>
+		<if test="map.svrTitle != null"> and svr_title like
+			concat(concat('%',#{map.svrTitle}),'%')</if>
+		<if test="map.svrType != null">and svr_type like concat(concat('%',#{map.svrType}),'%')
+		</if>
+		<if test="map.svrCreateDate != null and map.svrCreateDate != ''"> 
+		<![CDATA[
+		and svr_create_date >= #{map.svrCreateDate}
+		]]>
+			
+		</if>
+		<if test="map.svrCreateDate1 != null and map.svrCreateDate1 != ''"> 
+			
+			<![CDATA[
+		and svr_create_date <= #{map.svrCreateDate1}
+		]]>
+		</if>
+		limit #{page},#{limit}
+	</select>
+
+
+
+	<select id="findCstServiceCount" resultType="int" parameterType="Paging">
+		select count(s.svr_id)
+		from cst_service s left join cst_customer c on
+		s.svr_cust_no=c.cust_no
+		left join sys_user u on
+		s.svr_create_id=u.usr_id where svr_status=1
+		<if test="map.svrCustCustomer != null and map.svrCustCustomer != ''">
+			and c.cust_name like
+			CONCAT(CONCAT('%',#{map.svrCustCustomer}),'%') </if>
+		<if test="map.svrTitle != null"> and svr_title like
+			concat(concat('%',#{map.svrTitle}),'%')</if>
+		<if test="map.svrType != null">and svr_type like concat(concat('%',#{map.svrType}),'%')
+		</if>
+		<if test="map.svrCreateDate != null and map.svrCreateDate != ''"> 
+			and svr_create_date &gt;= #{map.svrCreateDate}
+		</if>
+		<if test="map.svrCreateDate1 != null and map.svrCreateDate1 != ''"> 
+			and svr_create_date &lt;= #{map.svrCreateDate1}
+		</if>
+	</select>
+
+	<delete id="deleteCstService" parameterType="map">
+		delete from
+		cst_service
+		where svr_id = #{svrId}
+	</delete>
+
+	<update id="updateCstService" parameterType="map">
+		update cst_service
+		<set>
+			<if test="svrDueUser != null">
+				svr_due_id = #{svrDueUser},
+			</if>
+			<if test="svrDueUser != null">
+				svr_status = 2,
+			</if>
+			<if test="svrDueUser != null">
+				svr_due_date = now()
+			</if>
+		</set>
+		<if test="svrId != null">
+			where svr_id = #{svrId}
+		</if>
+	</update>
+</mapper>

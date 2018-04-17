@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.haochen.hc0407crm.dao.cb.SysRoleRightDao">
+	
+	<select id="listSysRoleRight" resultType="SysRight">
+		select 
+				 	right_code rightCode,      
+					right_parent_code rightParentCode,
+					right_type rightType,       
+					right_text rightText,       
+					right_url rightUrl,        
+					right_tip rightTip,        
+					Right_node_type rightNodeType  
+		from (sys_role_right srr left join sys_role sr on srr.`rf_role_id` = sr.`role_id`) 
+						left join sys_right r on srr.`rf_right_code` = r.right_code 
+		<where>
+			<if test="roleId != null">
+				srr.`rf_role_id` = #{roleId}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="insertSysRoleRight" parameterType="map">
+		insert into sys_role_right(rf_role_id,rf_right_code) values(#{roleId},#{rightId})		  
+	</insert>
+	
+	<delete id="deleteSysRoleRight" parameterType="map">
+		delete from sys_role_right where rf_role_id = #{roleId}
+	</delete>
+</mapper>

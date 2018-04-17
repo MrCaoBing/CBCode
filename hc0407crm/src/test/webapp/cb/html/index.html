@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎来到客户关系管理系统</title>
+    <!-- 引入jQuery -->
+    <script src="../../jquery-3.2.1.min.js"></script>
+    <!-- 引入EasyUi -->
+    <script type="text/javascript" src="../../jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+    <!-- 引入国际化js,便可支持中文 -->
+    <script src="../../jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
+    <!-- 引入EasyUi的样式文件 -->
+    <link rel="stylesheet" href="../../jquery-easyui-1.5.3/themes/metro/easyui.css">
+    <!-- 引入EasyUi的图标样式文件 -->
+    <link rel="stylesheet" href="../../jquery-easyui-1.5.3/themes/icon.css">
+    <!-- 引入layuijs文件 -->
+    <script src="../../layui/layui.js"></script>
+    <!-- 引入layui样式文件 -->
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+	<!-- 引入自定义js文件 -->
+    <script type="text/javascript" src="../js/index.js"></script>
+    <!-- 引入自定义css文件 -->
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+    <div id="outer" class="easyui-layout" style="width:1228px;height: 880px;margin: 0px auto">
+        <div id="head" data-options="region:'north'" style="height:110px;">
+            <div style="margin: 10px">
+                <img src="images/crm_logo_02.jpg" height="70" width="120"/>
+            </div>
+            <div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <img src="images/crm_title_1.png" height="95" width="700"/>
+            </div>
+            <div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <br/><br/><br/><br/><br/><br/>
+                <span class="head_title">欢迎光临:</span>曹先生&nbsp;|&nbsp;
+                <span class="head_title">您的职位:</span>总经理&nbsp;|&nbsp;
+                <a href="login.html">退出登录</a>
+            </div>
+        </div>
+        <div data-options="region:'west',title:'您的权限',split:true" style="width:200px;">
+            <div style="padding: 20px">
+                <ul id="rights" class="easyui-tree">
+                    <li>
+                        <span>客户关系管理系统</span>
+                        <ul>
+                            <li>
+                                <span>营销管理</span>
+                                <ul>
+                                    <li>
+                                        <span><a pageUrl="aaa.html">销售机会管理</a></span>
+                                    </li>
+                                    <li>
+                                        <span><a href="#">客户开发计划</a></span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <span>客户管理</span>
+                                <ul>
+                                    <li>
+                                        <span><a href="#">销售机会管理</a></span>
+                                    </li>
+                                    <li>
+                                        <span><a href="#">客户开发计划</a></span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <span>服务管理</span>
+                                <ul>
+                                    <li>
+                                        <span><a href="#">销售机会管理</a></span>
+                                    </li>
+                                    <li>
+                                        <span><a href="#">客户开发计划</a></span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <span>统计报表</span>
+                                <ul>
+                                    <li>
+                                        <span><a href="#">销售机会管理</a></span>
+                                    </li>
+                                    <li>
+                                        <span><a href="#">客户开发计划</a></span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <span>基础数据</span>
+                                <ul>
+                                    <li>
+                                        <span><a href="#">销售机会管理</a></span>
+                                    </li>
+                                    <li>
+                                        <span><a href="#">客户开发计划</a></span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        <div data-options="region:'center'" style="padding:5px;background:#eee;">
+            <div id="optionTabs" class="easyui-tabs" style="width: 500px; height: 250px;"
+                 data-options="fit:true">
+                <div title="welcome" style="padding: 20px; display: none;">
+                    <img src="images/crm_theme_02.jpg" height="700" width="1000"/>
+                </div>
+            </div>
+        </div>
+
+        <div data-options="region:'south'" style="height:25px;text-align: center">
+            皓晨4班-2017-7组
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.haochen.hc0407crm.dao.cb.SysUserDao">
+	<!-- 登录相关 -->
+	<select id="listSysUser" parameterType="map" resultMap="SysUserRM">
+		select
+					usr_id usrId,
+					usr_name usrName,
+					usr_password usrPassword,
+					usr_role_id roleId,
+					usr_flag usrFlag,
+					role_name roleName,
+					role_desc
+					roleDesc,
+					role_flag roleFlag
+		from sys_user su left join sys_role sr on su.`usr_role_id` = sr.`role_id`
+		<where>
+				usr_flag = 1
+			<if test="usrName != null and usrPassword != null" >
+				and usr_name = #{usrName} and usr_password = #{usrPassword}
+			</if>
+			<if test="roleId != null">
+				and usr_role_id =#{roleId}
+			</if>
+			<if test="cust_manager_id">
+				usr_id =#{cust_manager_id}
+			</if>
+		</where>
+	</select>
+
+
+	<!-- 查询创建人信息 -->
+	<select id="selectCreateUserInfo" resultMap="SysUserRM"
+		parameterType="int">
+		select
+		usr_id usrId,
+		usr_name usrName,
+		usr_password
+		usrPassword,
+		usr_role_id roleId,
+		usr_flag usrFlag
+		from sys_user where
+		usr_id=#{id}
+	</select>
+
+	<!-- 查询指定经理的信息 -->
+	<select id="selectDueUserInfo" resultMap="SysUserRM"
+		parameterType="int">
+		select
+		usr_id usrId,
+		usr_name usrName,
+		usr_password
+		usrPassword,
+		usr_role_id roleId,
+		usr_flag usrFlag from
+		sys_user where
+		usr_id=#{id}
+	</select>
+	
+	<!-- 查询所有用户 -->
+	<select id="queryAllSysUser" parameterType="Paging" resultMap="SysUserRM">
+		select
+					usr_id usrId,
+					usr_name usrName,
+					usr_password usrPassword,
+					usr_role_id roleId,
+					usr_flag usrFlag,
+					role_name roleName,
+					role_desc
+					roleDesc,
+					role_flag roleFlag
+		from sys_user su left join sys_role sr on su.`usr_role_id` = sr.`role_id`
+		<where>
+				usr_flag = 1 and sr.`role_name` != 'admin'
+			<if test="map.usrName != null">
+				and usr_name like concat(concat('%', #{map.usrName}), '%')
+			</if>
+			<if test="limit != 0 and limit != null">
+				limit #{page},#{limit}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 查询数据条目 -->
+	<select id="queryAllSysUserCount" parameterType="Paging" resultType="int">
+		select
+					count(usr_id)
+		from sys_user su left join sys_role sr on su.`usr_role_id` = sr.`role_id`
+		<where>
+				usr_flag = 1 and sr.`role_name` != 'admin'
+			<if test="map.usrName != null">
+				and usr_name like concat(concat('%', #{map.usrName}), '%')
+			</if>
+		</where>
+	</select>
+	
+	<update id="updateSysUser">
+		update sys_user
+		<set>
+			<if test="usrName != null">
+				usr_name = #{usrName},
+			</if>
+			<if test="roleId != null">
+				usr_role_id = #{roleId},
+			</if>
+			<if test="usrFlag != null">
+				usr_flag = #{usrFlag},
+			</if>
+			<if test="usrPwd != null">
+				usr_password = #{usrPwd},
+			</if>
+		</set>
+		where usr_id = #{usrId} and usr_flag = 1
+	</update>
+	
+	<resultMap type="SysUser" id="SysUserRM">
+		<result property="sysRole.roleId" column="roleId" />
+		<result property="sysRole.roleFlag" column="roleFlag" />
+		<result property="sysRole.roleName" column="roleName" />
+		<result property="sysRole.roleDesc" column="roleDesc" />
+	</resultMap>
+	
+	<!-- 添加用户 -->
+	<insert id="insertSysUser" parameterType="map">
+		insert into sys_user(usr_name,usr_password,usr_role_id) values(#{usrName},#{usrPwd},#{usrRoleId})	     
+	</insert>
+	<!-- 判断用户是否存在 -->
+	<select id="querySysUserByName" parameterType="String" resultType="int">
+		select count(usr_id) from sys_user where usr_name = #{usrName} and usr_flag = 1
+	</select>
+</mapper>

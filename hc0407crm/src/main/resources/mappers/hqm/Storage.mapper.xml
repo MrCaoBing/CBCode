@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haochen.hc0407crm.dao.hqm.StorageDao">
+	<resultMap id="StorageRM" type="Storage">
+		<result property="product.prodName" column="prodName" />
+	</resultMap>
+
+	<select id="listStorageTiaojian" parameterType="Paging"
+		resultMap="StorageRM">
+		select s.stk_id stkId,p.prod_name prodName,s.stk_warehouse
+		stkWarehouse,s.stk_ware stkWare,s.stk_count stkCount,s.stk_memo
+		stkMemo
+		from storage as s left join product p on
+		s.stk_prod_id=p.prod_id
+		<where>
+			<if test="map.product != null and map.product != ''">p.prod_name like CONCAT(CONCAT('%',#{map.product}),'%')</if>
+			<if test="map.stkWarehouse != null"> and stk_warehouse like concat(concat('%',#{map.stkWarehouse}), '%')</if>
+		</where>
+		limit #{page},#{limit}
+	</select>
+
+
+
+	<select id="findStorageCount" resultType="int" parameterType="Paging">
+		select 
+			count(s.stk_id)
+		from storage as s left join product p on
+		s.stk_prod_id=p.prod_id
+		<where>
+			<if test="map.product != null and map.product != ''">p.prod_name like CONCAT(CONCAT('%',#{map.product}),'%')</if>
+			<if test="map.stkWarehouse != null"> and stk_warehouse like concat(concat('%',#{map.stkWarehouse}), '%') </if>
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haochen.hc0407crm.dao.cb.OrdersLineDao">
+	<!-- 根据客户主键查找 -->
+	<select id="queryOrdersLine" resultMap="selectOrdersLineRM" parameterType="map">
+		select 
+					odd_id oddId,
+					odd_count oddCount,
+					odd_unit oddUnit,
+					prod_id prodId,
+					prod_name prodName,
+					prod_type prodType,
+					prod_batch prodBatch,
+					prod_unit prodUnit,
+					prod_price prodPrice,
+					prod_memo prodMemo
+		from  orders_line ol left join Product p on ol.odd_prod_id = p.prod_id
+		where odd_order_id = #{ordId}
+	</select>
+	<resultMap type="OrdersLine" id="selectOrdersLineRM">
+		<result property="product.prodId" column="prodId" />
+		<result property="product.prodName" column="prodName" />
+		<result property="product.prodType" column="prodType" />
+		<result property="product.prodBatch" column="prodBatch" />
+		<result property="product.prodUnit" column="prodUnit" />
+		<result property="product.prodPrice" column="prodPrice" />
+		<result property="product.prodMemo" column="prodMemo" />
+	</resultMap>
+</mapper>

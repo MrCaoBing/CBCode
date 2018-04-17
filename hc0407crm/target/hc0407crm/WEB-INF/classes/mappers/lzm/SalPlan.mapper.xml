@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haochen.hc0407crm.dao.lzm.SalPlanDao">
+	<resultMap id="resultSalPlan" type="SalPlan">
+		<id property="plaId" column="pla_id" />
+		<result property="plaDate" column="pla_date" />
+		<result property="plaTodo" column="pla_todo" />
+		<result property="plaResult" column="pla_result" />
+		<association property="salChance" column="pla_chc_id"
+			select="com.haochen.hc0407crm.dao.lzm.SalChanceDao.selectAppointSalChanceInfo" />
+	</resultMap>
+
+	<select id="selectSalPlanInfo" parameterType="_int" resultMap="resultSalPlan">
+		SELECT
+		sal_plan.pla_id,
+		sal_plan.pla_chc_id,
+		sal_plan.pla_date,
+		sal_plan.pla_todo,
+		sal_plan.pla_result
+		FROM
+		sal_plan
+		where
+		pla_chc_id=#{chcId}
+	</select>
+	
+	
+	<delete id="deleteSalPlanInfo" parameterType="_int">
+		delete from
+		sal_plan where pla_id=#{id}
+	</delete>
+	
+	
+	<insert id="insertSalPlanInfo" parameterType="SalPlan">
+		insert into
+		sal_plan (pla_chc_id,pla_Date,pla_Todo,pla_Result) values(#{salChance.chcId},#{plaDate},#{plaTodo},#{plaResult})
+	</insert>
+	
+	
+	<update id="updateSalPlanInfo" parameterType="map">
+		update sal_plan set
+		<if test="plaTodo!=null">
+			pla_todo=#{plaTodo}
+		</if>
+		<if test="plaResult!=null">
+			pla_result=#{plaResult}
+		</if>
+		where pla_id=#{plaId}
+	</update>
+</mapper>

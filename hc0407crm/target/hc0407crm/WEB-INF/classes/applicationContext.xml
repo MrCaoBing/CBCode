@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+	<!-- 扫描注解,排除controller -->
+	<context:component-scan base-package="com.haochen.hc0407crm">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+		<property name="jdbcUrl" value="jdbc:mysql://120.77.123.158:3306/hc0407crm"></property>
+		<property name="user" value="root"></property>
+		<property name="password" value="q1251235022@"></property>
+		<property name="autoCommitOnClose" value="true"></property>
+	</bean>
+	<!-- 得到sqlSessionFactory -->
+	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:mybatis.cfg.xml"></property>
+		<property name="mapperLocations" value="classpath:mappers/*/*.mapper.xml"></property>
+	</bean>
+	<!-- 扫描映射接口 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.haochen.hc0407crm.dao.*"></property>
+		<property name="sqlSessionFactory" ref="sessionFactory"></property>		
+	</bean>
+	
+	<!-- 获得事务管理 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<!-- 配置事务通知 -->
+	<tx:advice id="t1" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" isolation="DEFAULT"/>
+			<tx:method name="set*" propagation="REQUIRED" isolation="DEFAULT" rollback-for="Exception"/>
+			<tx:method name="del*" propagation="REQUIRED" isolation="DEFAULT"/>
+		</tx:attributes>
+	</tx:advice>
+	<!-- 寻找切入点 -->
+	<aop:config>
+		<aop:advisor advice-ref="t1" pointcut="execution(* com.haochen.hc0407crm.service.*.impl.*.*(..))"/>
+	</aop:config>
+	
+	<!-- 开启事务注解 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<!-- @Transactional( rollbackFor={Exception.class},propagation=Propagation.REQUIRED) -->
+	<context:component-scan base-package="com.haochen.hc0407crm">
+		<context:include-filter type="annotation" expression="org.springframework.transaction.annotation.Transactional"/>
+	</context:component-scan>
+	
+	<!-- 整合quartz -->
+	<bean id="custInfoUpdJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="CheckCustInfoJob" />
+        <property name="targetMethod" value="cstCustomerWarning" />
+    </bean>
+    
+    <bean id="custInfoTrigger"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="custInfoUpdJobDetail" />
+        <property name="cronExpression" value="0 0 2 ? * 6 *"></property>
+    </bean>
+    
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    	<property name="triggers">
+    		<list>    		
+    			<ref bean="custInfoTrigger"/>
+    		</list>
+    	</property>
+    </bean>
+</beans>
